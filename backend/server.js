@@ -5,7 +5,7 @@ const app=express();
 const PORT=3000;
 
 app.use(express.json());
-app.use(express.static('public'));
+app.use(express.static('../frontend/public'));
 
 app.post('/api/joke', async (req,res) =>{
     const {name}=req.body;
