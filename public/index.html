@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personalized Joke Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f1f1f1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: 30px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 20px;
+            margin: 15px 0;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
+
+        input:focus {
+            border-color: #4CAF50;
+            outline: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        #loading {
+            color: #888;
+            font-size: 18px;
+            display: none;
+            margin-top: 10px;
+        }
+
+        p {
+            font-size: 20px;
+            margin-top: 30px;
+            color: #333;
+            line-height: 1.5;
+            min-height: 50px; /* Ensures space for joke result even if joke is short */
+        }
+
+        /* Responsive Design */
+        @media (max-width: 500px) {
+            h1 {
+                font-size: 28px;
+            }
+
+            .container {
+                padding: 20px;
+                width: 90%;
+            }
+
+            input, button {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>😂 <br>Get a Personalized Joke</h1>
+        <input type="text" id="name" placeholder="Enter Your Name" required>
+        <button id="get-joke" onclick="getJoke()">Get a Joke</button>
+        <p id="loading">Loading...</p>
+        <p id="jokeResult"></p>
+    </div>
+    <footer>
+        <div class="fotter">
+            <p>Made with ❤️ by Syed Farhan</p>
+        </div>
+    </footer>
+
+    <script>
+        async function getJoke() {
+            const name = document.getElementById('name').value;
+
+            // Check if the name is entered
+            if (!name) {
+                document.getElementById('jokeResult').textContent = 'Please enter your name!';
+                return;  // Exit the function if name is not provided
+            }
+
+            // Clear the previous joke immediately
+            document.getElementById('jokeResult').textContent = '';
+            
+            // Show loading indicator
+            document.getElementById('loading').style.display = 'block';
+
+            try {
+                const res = await fetch('/api/joke', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ name })
+                });
+
+                const data = await res.json();
+
+                // Hide loading and display joke
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('jokeResult').textContent = data.joke || 'No joke found!';
+
+                // Clear the input field after displaying the joke
+                document.getElementById('name').value = '';
+            } catch (error) {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('jokeResult').textContent = 'Oops! Something went wrong.';
+            }
+        }
+    </script>
+</body>
+</html>
