@@ -4,21 +4,30 @@ import cors from 'cors';
 
 const app = express();
 
-// Enable CORS for frontend domain
+// Allow list of frontend origins
+const allowedOrigins = [
+  'https://joke-website-frontend-oqhtt8hcb-syed-farhans-projects.vercel.app',
+  'https://joke-website-frontend-71u96wk0m-syed-farhans-projects.vercel.app'
+];
+
 app.use(cors({
-  origin: 'https://joke-website-frontend-oqhtt8hcb-syed-farhans-projects.vercel.app',  // Allow requests from frontend domain
+  origin: (origin, callback) => {
+    // allow requests with no origin (like mobile apps or curl requests)
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  }
 }));
 
 app.use(express.json());
 
-// API route to get a joke
 app.post('/api/joke', async (req, res) => {
   const { name } = req.body;
   try {
     const response = await axios.get('https://v2.jokeapi.dev/joke/Any?format=txt');
     let joke = response.data;
-
-    // Personalize the joke
     let personalizedJoke = joke.replace(/Chuck Norris>/g, name || 'Someone');
     res.send({ joke: personalizedJoke });
   } catch (error) {
@@ -26,10 +35,8 @@ app.post('/api/joke', async (req, res) => {
   }
 });
 
-// Root route to verify server is running (optional)
-app.get("/", (req, res) => {
-  res.status(200).send("Server is running");
+app.get('/', (req, res) => {
+  res.status(200).send('Server is running');
 });
 
-// Export the app (Vercel expects it)
 export default app;
