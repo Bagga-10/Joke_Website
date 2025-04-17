@@ -135,7 +135,7 @@
             document.getElementById('loading').style.display = 'block';
 
             try {
-                const res = await fetch('/api/joke', {
+                const res = await fetch('https://joke-website-backend-six.vercel.app/api/joke', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
