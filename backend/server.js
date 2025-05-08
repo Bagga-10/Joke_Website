@@ -9,7 +9,14 @@ const API_URL = process.env.JOKE_API_URL;
 
 const app = express();
 app.use(express.json());
-app.use(cors());
+
+const corsOptions = {
+  origin: process.env.FRONTEND_URL,
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+};
+
+app.use(cors(corsOptions));
 
 app.get("/joke", async (req, res) => {
   try {
@@ -23,6 +30,8 @@ app.get("/joke", async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+app.get("/", (req, res) => {
+  res.send("Hello from the server!");
 });
+
+app.listen(PORT || 3000, () => console.log(`🚀 Server running on port ${PORT || 3000}`));

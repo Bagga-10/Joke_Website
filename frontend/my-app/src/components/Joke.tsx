@@ -17,11 +17,9 @@ const Joke = () => {
       setJoke("Please enter your name to get a joke.");
       return;
     }
-    console.log("API_URL:", API_URL);
     setLoading(true);
     try {
-        const response = await fetch(`${API_URL}/joke`);
-    //   const response = await fetch("http://localhost:3000/joke");
+      const response = await fetch(`${API_URL}/joke`);
 
       if (!response.ok) {
         const errorText = await response.text();
